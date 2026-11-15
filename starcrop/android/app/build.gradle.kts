@@ -1,46 +1,51 @@
 plugins {
     id("com.android.application")
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id("kotlin-android")
     id("dev.flutter.flutter-gradle-plugin")
 }
 
 android {
     namespace = "com.example.starcrop"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    compileSdk = 35
+    ndkVersion = "29.0.14206865"
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_11.toString()
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.example.starcrop"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
-        // Uses the version code from pubspec.yaml. When using split APKs, 1000 * ABI_VERSION
-        // is added automatically by Flutter. (https://developer.android.com/studio/build/configure-apk-splits#configure-APK-versions)
-        // You can force using the value of versionCode by specifying the `-P force-version-code-ignoring-abi=true`
-        // flag during build.
+        targetSdk = 35
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        ndk {
+            abiFilters += "arm64-v8a"
+        }
+        externalNativeBuild {
+            cmake {
+                abiFilters("arm64-v8a")
+            }
+        }
     }
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            isMinifyEnabled = false
+            isShrinkResources = false
             signingConfig = signingConfigs.getByName("debug")
         }
     }
-}
 
-kotlin {
-    compilerOptions {
-        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+    splits {
+        abi {
+            isEnable = false
+        }
     }
 }
 
